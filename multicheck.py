@@ -1,7 +1,7 @@
 
 
 #==========================================================================================
-#   構造計算書の数値検査プログラムのサブルーチン（ver.3.00）
+#   構造計算書の数値検査プログラムのサブルーチン（ver.2.00）
 #
 #           一般財団法人日本建築総合試験所
 #
@@ -13,38 +13,15 @@
 設定した閾値（デフォルトは0.95）を超える部材を検出するプログラムのツールである。
 
 """
-# pip install pdfminer
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import PDFPageAggregator
-from pdfminer.pdfpage import PDFPage
-# from pdfminer.layout import LAParams, LTTextContainer
-from pdfminer.layout import LAParams, LTTextContainer, LTContainer, LTTextBox, LTTextLine, LTChar
-
-# pip install pdfrw
-from pdfrw import PdfReader
-from pdfrw.buildxobj import pagexobj
-from pdfrw.toreportlab import makerl
-
-# pip install reportlab
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase.cidfonts import UnicodeCIDFont
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.units import mm
-
-# pip install PyPDF2
-# from PyPDF2 import PdfReader as PR2 # 名前が上とかぶるので別名を使用
-import PyPDF2
+#
 from pypdf import PdfReader as PR2 # 名前が上とかぶるので別名を使用
 import pypdf
 
 # その他のimport
 import os,time
 import sys
-import numpy as np
 import logging
 import glob
-import threading
 from multiprocessing import Process,Array
 import shutil
 from CheckTool import CheckTool
@@ -182,7 +159,7 @@ class multicheck:
         version = self.version
     
     #============================================================================
-    #  分割された計算書から数値検出する関数
+    #  複製された計算書から数値検出する関数
     #============================================================================
 
     def PageCheck(self,fname,outdir,psn,PageNumber,ProcessN):
@@ -311,7 +288,7 @@ class multicheck:
 
 
 #==================================================================================
-#   このクラスを単独でテストする場合のメインルーチン
+#   このクラスを単独でテストする場合のメインルーチン（マルチプロセス）
 #==================================================================================
 
 if __name__ == '__main__':

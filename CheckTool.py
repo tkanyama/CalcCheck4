@@ -32,9 +32,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.units import mm
 
-# pip install PyPDF2
-# from PyPDF2 import PdfReader as PR2 # 名前が上とかぶるので別名を使用
-import PyPDF2
+# pip install pypdf
 from pypdf import PdfReader as PR2 # 名前が上とかぶるので別名を使用
 import pypdf
 
@@ -280,6 +278,7 @@ class CheckTool():
 
     #==================================================================================
     #   各ページから１文字ずつの文字と座標データを抽出し、行毎の文字配列および座標配列を戻す関数
+    #       検定比表に使用する関数
     #==================================================================================
 
     def MakeChar(self, page, interpreter, device):
@@ -432,7 +431,8 @@ class CheckTool():
     #*********************************************************************************
 
     #==================================================================================
-    #   修正
+    #   各ページから１文字ずつの文字と座標データを抽出し、行毎の文字配列および座標配列を戻す関数
+    #       検定比図に使用する関数
     #==================================================================================
 
     def MakeChar2(self, page, interpreter, device):
@@ -1417,250 +1417,6 @@ class CheckTool():
 
 
     #============================================================================
-    #  プログラムのメインルーチン（外部から読み出す関数名）
-    #============================================================================
-
-    def CheckTool(self,filename, limit=0.95 ,stpage=0, edpage=0):
-        global flag1, fname, dir1, dir2, dir3, dir4, dir5, folderName, paraFileName
-        global ErrorFlag, ErrorMessage
-        global kind, verion
-
-        if filename =="" :
-            return False
-        #end if
-
-        pdf_file = filename
-        pdf_out_file = os.path.splitext(pdf_file)[0] + '[検出結果(閾値={:.2f}'.format(limit)+')].pdf'
-
-        # PyPDF2のツールを使用してPDFのページ情報を読み取る。
-        # PDFのページ数と各ページの用紙サイズを取得
-        try:
-            with open(pdf_file, "rb") as input:
-                reader = PR2(input)
-                PageMax = len(reader.pages)     # PDFのページ数
-                PaperSize = []
-                for page in reader.pages:       # 各ページの用紙サイズの読取り
-                    p_size = page.mediabox
-                    page_xmin = float(page.mediabox.lower_left[0])
-                    page_ymin = float(page.mediabox.lower_left[1])
-                    page_xmax = float(page.mediabox.upper_right[0])
-                    page_ymax = float(page.mediabox.upper_right[1])
-                    PaperSize.append([page_xmax - page_xmin , page_ymax - page_ymin])
-            #end with
-        except OSError as e:
-            print(e)
-            logging.exception(sys.exc_info())#エラーをlog.txtに書き込む
-            return False, kind, version
-        except:
-            logging.exception(sys.exc_info())#エラーをlog.txtに書き込む
-            return False, kind, version
-        #end try
-        
-        #=============================================================
-        if stpage <= 0 :      # 検索を開始する最初のページ
-            startpage = 2
-        elif stpage > PageMax:
-            startpage = PageMax-1
-        else:
-            startpage = stpage
-        #end if
-
-        if edpage <= 0 :  # 検索を終了する最後のページ
-            endpage = PageMax 
-        elif edpage > PageMax:
-            endpage = PageMax
-        else:
-            endpage = edpage
-        #end if
-
-        # PDFMinerのツールの準備
-        resourceManager = PDFResourceManager()
-        # PDFから単語を取得するためのデバイス
-        device = PDFPageAggregator(resourceManager, laparams=LAParams())
-        # PDFから１文字ずつを取得するためのデバイス
-        device2 = PDFPageAggregator(resourceManager)
-
-        pageResultData = []
-        pageNo = []
-
-        try:
-            with open(pdf_file, 'rb') as fp:
-                interpreter = PDFPageInterpreter(resourceManager, device)
-                interpreter2 = PDFPageInterpreter(resourceManager, device2)
-                pageI = 0
-                
-                for page in PDFPage.get_pages(fp):
-                    pageI += 1
-
-                    ResultData = []
-                    print("page={}:".format(pageI), end="")
-                    if pageI == 1 :
-                        # flag1 = True
-                        pageFlag = True
-                        kind, version = self.CoverCheck(page, interpreter2, device2)
-                        print()
-                        print("プログラムの名称：{}".format(kind))
-                        print("プログラムのバーsジョン：{}".format(version))
-
-                        with open("./kind.txt", 'w', encoding="utf-8") as fp2:
-                            print(kind, file=fp2)
-                            print(version, file=fp2)
-                            fp2.close()
-
-                    else:
-
-                        if pageI < startpage:
-                            print()
-                            continue
-                        #end if
-                        if pageI > endpage:
-                            break
-                        #end if
-
-                        if kind == "SuperBuild/SS7":
-                            #============================================================
-                            # 構造計算書がSS7の場合の処理
-                            #============================================================
-
-                            pageFlag, ResultData = self.SS7(page, limit, interpreter, device, interpreter2, device2)
-
-                        # 他の種類の構造計算書を処理する場合はここに追加
-                        # elif kind == "****":
-                        #     pageFlag, ResultData = self.***(page, limit, interpreter, device, interpreter2, device2)
-
-                        else:
-                            #============================================================
-                            # 構造計算書の種類が不明の場合はフォーマットを無視して数値のみを検出
-                            #============================================================
-
-                            pageFlag, ResultData = self.OtherSheet(page, limit, interpreter, device, interpreter2, device2)
-
-                            # return False
-                        #end if
-
-                    if pageFlag : 
-                        pageNo.append(pageI)
-                        pageResultData.append(ResultData)
-                    #end if
-                #next
-
-                fp.close()
-                folderName = ""
-                os.remove("./kind.txt")
-            # end with
-
-        except OSError as e:
-            print(e)
-            logging.exception(sys.exc_info())#エラーをlog.txtに書き込む
-            return False
-        except:
-            logging.exception(sys.exc_info())#エラーをlog.txtに書き込む
-            return False
-        #end try
-
-
-        # 使用したデバイスをクローズ
-        device.close()
-        device2.close()
-
-        #============================================================================================
-        #
-        #   数値検出結果を用いて各ページに四角形を描画する
-        #
-        #============================================================================================
-        
-        try:
-            in_path = pdf_file
-            out_path = pdf_out_file
-
-            # 保存先PDFデータを作成
-            cc = canvas.Canvas(out_path)
-            cc.setLineWidth(1)
-            # PDFを読み込む
-            pdf = PdfReader(in_path, decompress=False)
-
-            i = 0
-            for pageI in range(len(pageNo)):
-                pageN = pageNo[pageI]
-                pageSizeX = float(PaperSize[pageN-1][0])
-                pageSizeY = float(PaperSize[pageN-1][1])
-                page = pdf.pages[pageN - 1]
-                ResultData = pageResultData[pageI]
-                # PDFデータへのページデータの展開
-                pp = pagexobj(page) #ページデータをXobjへの変換
-                rl_obj = makerl(cc, pp) # ReportLabオブジェクトへの変換  
-                cc.doForm(rl_obj) # 展開
-
-                if pageN == 1:  # 表紙に「"検定比（0.##以上）の検索結果」の文字を印字
-                    cc.setFillColor("red")
-                    font_name = "ipaexg"
-                    cc.setFont(font_name, 20)
-                    cc.drawString(20 * mm,  pageSizeY - 40 * mm, "検定比（{}以上）の検索結果".format(limit))
-
-                else:   # ２ページ目以降は以下の処理
-                    pn = len(ResultData)
-
-                    # ページの左肩に検出個数を印字
-                    cc.setFillColor("red")
-                    font_name = "ipaexg"
-                    cc.setFont(font_name, 12)
-                    t2 = "検索個数 = {}".format(pn)
-                    cc.drawString(20 * mm,  pageSizeY - 15 * mm, t2)
-
-                    # 該当する座標に四角形を描画
-                    for R1 in ResultData:
-                        a = R1[0]
-                        origin = R1[1]
-                        flag = R1[2]
-                        x0 = origin[0]
-                        y0 = origin[1]
-                        width = origin[2]
-                        height = origin[3]
-
-                        # 長方形の描画
-                        cc.setFillColor("white", 0.5)
-                        cc.setStrokeColorRGB(1.0, 0, 0)
-                        cc.rect(x0, y0, width, height, fill=0)
-
-                        if flag:    # "壁の検定表"の場合は、四角形の右肩に数値を印字
-                            cc.setFillColor("red")
-                            font_name = "ipaexg"
-                            cc.setFont(font_name, 7)
-                            t2 = " {:.2f}".format(a)
-                            cc.drawString(origin[0]+origin[2], origin[1]+origin[3], t2)
-                        #end if
-                    #next
-                #end if
-
-                # ページデータの確定
-                cc.showPage()
-            # next
-
-            # PDFの保存
-            cc.save()
-
-            # time.sleep(1.0)
-            # # すべての処理がエラーなく終了したのでTrueを返す。
-            # return True
-
-        except OSError as e:
-            print(e)
-            logging.exception(sys.exc_info())#エラーをlog.txtに書き込む
-            return False
-        except:
-            logging.exception(sys.exc_info())#エラーをlog.txtに書き込む
-            return False
-
-        #end try
-
-        # すべての処理がエラーなく終了したのでTrueを返す。
-        return True
-
-    #end def    
-    #*********************************************************************************
-
-
-    #============================================================================
     #  表紙のチェック（外部から読み出す関数名）
     #============================================================================
 
@@ -1829,7 +1585,7 @@ class CheckTool():
 
 
     #============================================================================
-    #  プログラムのメインルーチン（外部から読み出す関数名）
+    #  表紙以外のページのチェック（外部から読み出す関数名）
     #============================================================================
 
     def PageCheck(self,filename, outdir, limit ,kind, version, psn, PageNumber,ProcessN):
@@ -2064,14 +1820,19 @@ class CheckTool():
     #end def    
     #*********************************************************************************
 
-
-
     #============================================================================
-    #  処理のメインルーチン関数
-    #       計算書の分割
-    #       表示の読取り
-    #       分割された計算書の並列処理
+    #  このクラスを単独で実行する場合に呼び出す関数
+    #       filename    :   計算書のファイル名
+    #       outfilename :   結果ファイル名
+    #       limit       :   数値の閾値（0.01〜0.99）
+    #       startpage   :   開始ページ
+    #       endpage     :   終了ページ
+    #
+    #       CT = CheckTool()
+    #       pdf_out_file = os.path.splitext(filename)[0] + '[検出結果(閾値={:.2f}'.format(limit)+')].pdf'
+    #       flag = CT.doCheck(filename,pdf_out_file,limit,stpage,edpage)
     #============================================================================
+    
     def doCheck(self, filenname, outfilename, limit, startpage, endpage):
 
         # プログラムのあるディレクトリー
@@ -2150,10 +1911,12 @@ class CheckTool():
             os.remove(file1)
 
         return True
+    #end def
+    #*********************************************************************************
 
 
 #==================================================================================
-#   このクラスを単独でテストする場合のメインルーチン
+#   このクラスを単独でテストする場合のメインルーチン（シングルプロセス）
 #==================================================================================
 
 if __name__ == '__main__':

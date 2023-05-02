@@ -183,13 +183,13 @@ def CreateFolfer():
         return False
     #end try
 #end def
-    #*********************************************************************************
+#*********************************************************************************
 
 
 
-    #============================================================================
-    #  実際に処理を行う関数（スレッドで実行）
-    #============================================================================
+#============================================================================
+#  実際に処理を行う関数（スレッドで実行）
+#============================================================================
 
 def RunCheck():
     global time_sta
@@ -325,149 +325,9 @@ def RunCheck():
     #end try
     #*********************************************************************************
 
-
-
-    #============================================================================
-    #  プログラムのメインルーチン（外部から読み出す関数名）
-    #============================================================================
-
-def main():
-    global time_sta
-    global flag1, fname, dir1, dir2, dir3, dir4, dir5, folderName, paraFileName
-    global ErrorFlag, ErrorMessage, runLogFile, systemLogFile
-    global kind, verion
-
-    if CreateFolfer():
-        los_file = dir3 + "/" + systemLogFile
-        # log 出力レベルの設定
-        logging.basicConfig(filename=los_file,level=logging.WARNING,
-                    format="%(asctime)s %(levelname)s %(message)s")
-        logging.debug('debug')
-        logging.info('info')
-        logging.warning('warnig')
-        logging.error('error')
-        logging.critical('critical')
-
-        time_sta = time.time()  # 開始時刻の記録
-
-        root = tk.Tk()
-        # root = tk.Toplevel()
-    
-        Width = 800
-        Height = 600
-        root.title(u"Calculation Sheet Check")
-        root.geometry("800x600")
-        root.geometry("{}x{}".format(Width,Height))
-
-        Static1 = tk.Label(text=u'\n構造計算書の数値検索プログラム', font=("MSゴシック", "28", "bold"))
-        Static1.pack()
-
-        Static2 = tk.Label(text=u'\n一般財団法人日本建築総合試験所\n構造判定センター', font=("MSゴシック", "28", "bold"))
-        Static2.pack()
-
-        Static3 = tk.Label(text=u'\n\nファイル名：\n\nファイル名：', font=("MSゴシック", "28", "bold"))
-        Static3.pack()
-
-        Static4 = tk.Label(text=u'\n経過時間：', font=("ヒラギノ角ゴシック", "28", "bold"))
-        Static4.pack()
-
-        root.update_idletasks()
-        ww=root.winfo_screenwidth()
-        lw=root.winfo_width()
-        wh=root.winfo_screenheight()
-        lh=root.winfo_height()
-        # canvas=tk.Canvas(root,width=lw,heigh=lh)
-        # canvas.pack()#ここを書かないとcanvasがうまく入らない．
-
-        root.geometry(str(lw)+"x"+str(lh)+"+"+str(int(ww/2-lw/2))+"+"+str(int(wh/2-lh/2)) )
-
-        thread1 = threading.Thread(target=RunCheck)
-        thread1.start()
-        flag1 = True
-        ErrorFlag = False
-        ErrorMessage = ""
-        # i = 0
-        kind = ""
-        version = ""
-        count = 0
-        while flag1:
-            root.update()
-            count += 1
-            # now_h=datetime.now().hour
-            # now_s=datetime.now().second
-            # now_m=datetime.now().minute
-            # now_time=str(now_h)+":"+str(now_m)+":"+str(now_s)
-            # if folderName != folderName1:
-            if count % 5 == 0 :
-                if os.path.isfile('./kind.txt'):
-                    with open('./kind.txt') as f:
-                        kind = f.readline()
-                        version = f.readline()
-                        f.close()
-                        # root.update()
-                    #end with
-                #end if
-            #end if
-            # folderName1 = folderName
-            # flag2 = False
-            #end if
-
-            t1 = '\nフォルダー名：' + folderName + '\nファイル名：' + fname
-            t1 += '\nプログラム名：' + kind + 'バージョン：' + version
-            Static3["text"] = t1
-            Static4["text"] = "\n経過時間：{:7.0f}秒".format(time.time() - time_sta)
-            # canvas.create_text(lw/2,200,text=now_time,font=("",25,""),tag='Y') #タグを入れることで更新できるようにする．
-            # canvas.update()
-            # canvas.delete('Y')
-            # i += 1
-            # Static2["text"] = u'\n一般財団法人日本建築総合試験所{}'.format(i)
-
-            time.sleep(1.0)
-        #end while
-        
-        if ErrorFlag:
-            # 何らかのエラーで処理を中止した場合はフォルダをエラーフォルダに移動しメッセージを表示
-            AddLog(ErrorMessage)
-            path1 = dir1 + "/" + folderName 
-            path2 = dir5 
-            # new_path = shutil.move(path1, path2)
-            # messagebox.showerror('エラー', ErrorMessage)
-
-            # フォルダー名の最後の3文字が (n) の場合は何番目であるか
-            t1 = folderName[len(folderName)-3:]
-            if t1[0] == "(" and t1[len(t1)-1] == ")" :
-                num = int(t1.replace("(","").replace(")",""))
-                numflag = True
-            else:
-                num = 0
-                numflag = False
-
-            if not os.path.isdir(path2 + "/" + folderName):
-                new_path = shutil.move(path1, path2 )
-            else:
-                while True:
-                    # 同じ名前にならないよう繰り返す
-                    num += 1
-                    if numflag :
-                        newFolder = path2 + "/" + folderName[:len(folderName)-3] + "({})".format(num)
-                    else:
-                        newFolder = path2 + "/" + folderName + "({})".format(num)
-                    #end if
-                    if not os.path.isdir(newFolder):
-                        new_path = shutil.move(path1, newFolder)
-                        break
-                    #end if
-                #end while
-            #end if
-
-            # messagebox.showerror('エラー', ErrorMessage)
-        #end if
-                        
-    else:
-        return
-    #end if
-#end def
-    #*********************************************************************************
+#============================================================================
+#  ログファイルにメッセージを記録する関数
+#============================================================================
 
 def AddLog(Message1):
     global flag1, fname, dir1, dir2, dir3, dir4, dir5, folderName, paraFileName
@@ -505,7 +365,136 @@ def AddLog(Message1):
         #end try
     #end if
 #end def
+#*********************************************************************************
 
+
+#============================================================================
+#  プログラムのメインルーチン（外部から読み出す関数名）
+#============================================================================
+
+def main():
+    global time_sta
+    global flag1, fname, dir1, dir2, dir3, dir4, dir5, folderName, paraFileName
+    global ErrorFlag, ErrorMessage, runLogFile, systemLogFile
+    global kind, verion
+
+    if CreateFolfer():
+        los_file = dir3 + "/" + systemLogFile
+        # log 出力レベルの設定
+        logging.basicConfig(filename=los_file,level=logging.WARNING,
+                    format="%(asctime)s %(levelname)s %(message)s")
+        logging.debug('debug')
+        logging.info('info')
+        logging.warning('warnig')
+        logging.error('error')
+        logging.critical('critical')
+
+        time_sta = time.time()  # 開始時刻の記録
+
+        root = tk.Tk()
+        # root = tk.Toplevel()
+    
+        Width = 800
+        Height = 600
+        root.title(u"Calculation Sheet Check Ver.2")
+        root.geometry("800x600")
+        root.geometry("{}x{}".format(Width,Height))
+
+        Static1 = tk.Label(text=u'\n構造計算書の数値検索プログラム', font=("MSゴシック", "28", "bold"))
+        Static1.pack()
+
+        Static2 = tk.Label(text=u'\n一般財団法人日本建築総合試験所\n構造判定センター', font=("MSゴシック", "28", "bold"))
+        Static2.pack()
+
+        Static3 = tk.Label(text=u'\n\nファイル名：\n\nファイル名：', font=("MSゴシック", "28", "bold"))
+        Static3.pack()
+
+        Static4 = tk.Label(text=u'\n経過時間：', font=("ヒラギノ角ゴシック", "28", "bold"))
+        Static4.pack()
+
+        root.update_idletasks()
+        ww=root.winfo_screenwidth()
+        lw=root.winfo_width()
+        wh=root.winfo_screenheight()
+        lh=root.winfo_height()
+        # canvas=tk.Canvas(root,width=lw,heigh=lh)
+        # canvas.pack()#ここを書かないとcanvasがうまく入らない．
+
+        root.geometry(str(lw)+"x"+str(lh)+"+"+str(int(ww/2-lw/2))+"+"+str(int(wh/2-lh/2)) )
+
+        thread1 = threading.Thread(target=RunCheck)
+        thread1.start()
+        flag1 = True
+        ErrorFlag = False
+        ErrorMessage = ""
+        # i = 0
+        kind = ""
+        version = ""
+        count = 0
+        while flag1:
+            root.update()
+            count += 1
+            
+            if count % 5 == 0 :
+                if os.path.isfile('./kind.txt'):
+                    with open('./kind.txt') as f:
+                        kind = f.readline()
+                        version = f.readline()
+                        f.close()
+                        # root.update()
+                    #end with
+                #end if
+            #end if
+
+            t1 = '\nフォルダー名：' + folderName + '\nファイル名：' + fname
+            t1 += '\nプログラム名：' + kind + 'バージョン：' + version
+            Static3["text"] = t1
+            Static4["text"] = "\n経過時間：{:7.0f}秒".format(time.time() - time_sta)
+            
+            time.sleep(1.0)
+        #end while
+        
+        if ErrorFlag:
+            # 何らかのエラーで処理を中止した場合はフォルダをエラーフォルダに移動しメッセージを表示
+            AddLog(ErrorMessage)
+            path1 = dir1 + "/" + folderName 
+            path2 = dir5 
+            
+            # フォルダー名の最後の3文字が (n) の場合は何番目であるか
+            t1 = folderName[len(folderName)-3:]
+            if t1[0] == "(" and t1[len(t1)-1] == ")" :
+                num = int(t1.replace("(","").replace(")",""))
+                numflag = True
+            else:
+                num = 0
+                numflag = False
+
+            if not os.path.isdir(path2 + "/" + folderName):
+                new_path = shutil.move(path1, path2 )
+            else:
+                while True:
+                    # 同じ名前にならないよう繰り返す
+                    num += 1
+                    if numflag :
+                        newFolder = path2 + "/" + folderName[:len(folderName)-3] + "({})".format(num)
+                    else:
+                        newFolder = path2 + "/" + folderName + "({})".format(num)
+                    #end if
+                    if not os.path.isdir(newFolder):
+                        new_path = shutil.move(path1, newFolder)
+                        break
+                    #end if
+                #end while
+            #end if
+
+            # messagebox.showerror('エラー', ErrorMessage)
+        #end if
+                        
+    else:
+        return
+    #end if
+#end def
+    #*********************************************************************************
 
     #============================================================================
     #  プログラムのメインルーチン（外部から読み出す関数名）
