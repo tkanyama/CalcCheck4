@@ -1,0 +1,10 @@
+/.DS_Store
+/.vscode
+/__pycache__
+/init.json
+/kind.txt
+/out
+/pdf
+/サンプル計算書(1)[検出結果(閾値=0.90)].pdf
+/構造計算書_新関西将棋会館.pdf
+/構造計算書_新関西将棋会館[検出結果(閾値=0.90)].pdf
