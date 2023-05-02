@@ -2160,19 +2160,19 @@ if __name__ == '__main__':
     
     time_sta = time.time()  # 開始時刻の記録
 
-    # stpage = 170
-    # edpage = 200
-    # limit = 0.90
-    # filename = "サンプル計算書(1).pdf"
+    stpage = 170
+    edpage = 200
+    limit = 0.90
+    filename = "サンプル計算書(1).pdf"
     # stpage = 1
     # edpage = 0
     # limit = 0.70
     # filename = "SS7構造計算書（抜粋）のコピー.pdf"
 
-    stpage = 2
-    edpage = 84
-    limit = 0.90
-    filename = "構造計算書_新関西将棋会館.pdf"
+    # stpage = 2
+    # edpage = 84
+    # limit = 0.90
+    # filename = "構造計算書_新関西将棋会館.pdf"
 
     CT = CheckTool()
     
