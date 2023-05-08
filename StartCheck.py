@@ -245,6 +245,8 @@ def RunCheck():
 
                                 fname = os.path.basename(file)  # 表示ウインドウに表示するファイル名を設定
                                 MCT = multicheck(file,limit=limit1,stpage=stpage,edpage=edpage,bunkatu=BUNKATU)
+                                message = folderName + "/" + fname + ":数値の検出開始"
+                                AddLog(message)
                                 if MCT.doCheck():
                                 # if CT.CheckTool(file, limit=limit1, stpage=stpage, edpage=edpage):
                                     outfolder = folder + '[検出結果(閾値={:.2f}'.format(limit1)+')]'

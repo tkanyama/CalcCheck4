@@ -104,6 +104,14 @@ class multicheck:
             os.mkdir(self.dir1)
         #end if
 
+        # pdfフォルダー内にあるPDFファイルをすべて削除
+        files = glob.glob(os.path.join(self.dir1, "*.pdf"))
+        if len(files)>0:
+            for file in files:
+                os.remove(file)
+            #next
+        #end if
+
         # 結果ファイルを一時保存するディレクトリー（無ければ作成）
         self.dir2 = fld + "/out"
         if not os.path.isdir(self.dir2):
