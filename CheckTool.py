@@ -687,9 +687,10 @@ class CheckTool():
                     # t4 = t3.split()            # 文字列を空白で分割
                     t4 = items
 
-                    if len(t4)>0:    # 文字列配列が１個以上ある場合に処理
+                    if len(t4)>0 and t4[0] != "Super":    # 文字列配列が１個以上ある場合に処理
                         for t5 in t4:
                             t6 = t5.replace("(","").replace(")","").replace(" ","").replace("C","").replace("T","").replace("組","")     # 「検定比」と数値が一緒の場合は除去
+                            # print(t6)
                             nn = t3.find(t6,st)   # 数値の文字位置を検索
                             ln = len(t6)
 
@@ -706,7 +707,7 @@ class CheckTool():
 
                             if isfloat(t6):
                                 a = float(t6)
-                                if a>=limit1 and a<1.0:
+                                if a>=limit1 and a<=1.0:
                                     # 数値がlimit以上の場合はデータに登録
                                     xxx0 = CharLine[nn-xn1][1]
                                     xxx1 = CharLine[nn+ln+xn2-1][2]
@@ -782,7 +783,7 @@ class CheckTool():
                             # t4=t4.replace("検定比","")
                             if isfloat(t4): # 切り取った文字が数値の場合の処理
                                 a = float(t4)
-                                if a>=limit1 and a<1.0:
+                                if a>=limit1 and a<=1.0:
                                     # 数値がlimit以上の場合はデータに登録
                                     nn = t3.index(t4)   # 数値の文字位置を検索
                                     xxx0 = CharLine[nn][1]
@@ -821,7 +822,7 @@ class CheckTool():
                                     w2 = w1.replace("検定比","")
                                     if isfloat(w2): # 切り取った文字が数値の場合の処理
                                         a = float(w2)
-                                        if a>=limit1 and a<1.0:
+                                        if a>=limit1 and a<=1.0:
                                             # 数値がlimit以上の場合はデータに登録
                                             n = t3.find(w2,st)   # 数値の文字位置を検索
                                             xxx0 = CharLine[n][1]
@@ -900,7 +901,7 @@ class CheckTool():
                                             w2 = w1.replace(" ","")
                                             if isfloat(w2): # 切り取った文字が数値の場合の処理
                                                 a = float(w2)
-                                                if a>=limit3 and a<1.0:
+                                                if a>=limit1 and a<=1.0:
                                                     # 数値がlimit以上の場合はデータに登録
                                                     n = t3.find(w2,st)   # 数値の文字位置を検索
                                                     xxx0 = CharLine[n][1]
@@ -962,7 +963,7 @@ class CheckTool():
                                     ln = len(t5)
                                     if isfloat(t6):
                                         a = float(t6)
-                                        if a>=limit1 and a<1.0:
+                                        if a>=limit1 and a<=1.0:
                                             # 数値がlimit以上の場合はデータに登録
                                             xxx0 = CharLine[nn][1]
                                             xxx1 = CharLine[nn+3][2]
@@ -1039,7 +1040,7 @@ class CheckTool():
                                         w2 = w1.replace(" ","")
                                         if isfloat(w2): # 切り取った文字が数値の場合の処理
                                             a = float(w2)
-                                            if a>=limit1 and a<1.0:
+                                            if a>=limit1 and a<=1.0:
                                                 # 数値がlimit以上の場合はデータに登録
                                                 n = t3.find(w2,st)   # 数値の文字位置を検索
                                                 xxx0 = CharLine[n][1]
@@ -1115,7 +1116,7 @@ class CheckTool():
                         
                         if A2 != 0.0:
                             a = abs(A1/A2)
-                            if a>=limit2 and a<1.0:
+                            if a>=limit2 and a<=1.0:
                                 
                                 xxx0 -= xd
                                 xxx1 += xd
@@ -1169,7 +1170,7 @@ class CheckTool():
                         
                         if A2 != 0.0:
                             a = abs(A1/A2)
-                            if a>=limit2 and a<1.0:
+                            if a>=limit2 and a<=1.0:
                                 
                                 xxx0 -= xd
                                 xxx1 += xd
@@ -1244,7 +1245,7 @@ class CheckTool():
                                         w2 = w1.replace(" ","")
                                         if isfloat(w2): # 切り取った文字が数値の場合の処理
                                             a = float(w2)
-                                            if a>=limit1 and a<1.0:
+                                            if a>=limit1 and a<=1.0:
                                                 # 数値がlimit以上の場合はデータに登録
                                                 n = t3.find(w2,st)   # 数値の文字位置を検索
                                                 xxx0 = CharLine[n][1]
@@ -1352,7 +1353,7 @@ class CheckTool():
                     st = 0
                     # t4 = t3.split()            # 文字列を空白で分割
                     t4 = items
-                    if len(t4)>0:    # 文字列配列が１個以上ある場合に処理
+                    if len(t4)>0 and t4[0] != "Super":    # 文字列配列が１個以上ある場合に処理
                         for t5 in t4:
                             t6 = t5.replace("(","").replace(")","").replace(" ","").replace("C","").replace("T","").replace("組","")     # 「検定比」と数値が一緒の場合は除去
                             nn = t3.find(t6,st)   # 数値の文字位置を検索
@@ -1371,7 +1372,7 @@ class CheckTool():
 
                             if isfloat(t6):
                                 a = float(t6)
-                                if a>=limit1 and a<1.0:
+                                if a>=limit1 and a<=1.0:
                                     # 数値がlimit以上の場合はデータに登録
                                     xxx0 = CharLine[nn-xn1][1]
                                     xxx1 = CharLine[nn+ln+xn2-1][2]
