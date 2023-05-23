@@ -707,7 +707,7 @@ class CheckTool():
                                 xn1 = 0
                                 xn2 = 0
 
-                            if isfloat(t6):
+                            if isfloat(t6) and len(t6)>=4:
                                 a = float(t6)
                                 if a>=limit1 and a<=1.0:
                                     # 数値がlimit以上の場合はデータに登録
@@ -1372,7 +1372,7 @@ class CheckTool():
                                 xn1 = 0
                                 xn2 = 0
 
-                            if isfloat(t6):
+                            if isfloat(t6) and len(t6)>=4:
                                 a = float(t6)
                                 if a>=limit1 and a<=1.0:
                                     # 数値がlimit以上の場合はデータに登録
