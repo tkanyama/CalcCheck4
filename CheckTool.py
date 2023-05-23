@@ -118,6 +118,7 @@ class CheckTool():
         # １文字ずつのレイアウトデータを取得
         layout = device.get_result()
 
+        # CharData5 = []
         CharData = []
         for lt in layout:
             if isinstance(lt, LTChar):  # レイアウトデータうち、LTCharのみを取得
@@ -144,7 +145,8 @@ class CheckTool():
         
         # リスト「CY」から降順の並び替えインデックッスを取得
         y=np.argsort(np.array(CY))[::-1]
-
+        t1 = []
+            
         if len(CharData2) > 0:  # リストが空でない場合に処理を行う
             CharData3 = []
             # インデックスを用いて並べ替えた「CharData3」を作成
@@ -180,7 +182,6 @@ class CheckTool():
             #end if
 
             # 次にX座標の順番にデータを並び替える（昇順）
-            t1 = []
             CharData5 = []
             for F1 in CharData4:    # Y座標が同じデータを抜き出す。                        
                 CX = []         # 各データのX座標のデータリストを作成
@@ -256,21 +257,22 @@ class CheckTool():
             t1.append([tt2])
         #end if
         kind ="不明"
-        vesion = "不明"
-        for line in t1:
-            # 全角の'：'と'／'を半角に置換
-            t2 = line[0].replace(" ","").replace("：",":").replace("／","/")
+        version = "不明"
+        if len(t1)>0:
+            for line in t1:
+                # 全角の'：'と'／'を半角に置換
+                t2 = line[0].replace(" ","").replace("：",":").replace("／","/")
 
-            if "プログラムの名称" in t2:
-                n = t2.find(":",0)
-                kind = t2[n+1:]
-            elif "プログラムバージョン" in t2:
-                n = t2.find(":",0)
-                version = t2[n+1:]
-                break
-            #end if
-        #next
-        
+                if "プログラムの名称" in t2:
+                    n = t2.find(":",0)
+                    kind = t2[n+1:]
+                elif "プログラムバージョン" in t2:
+                    n = t2.find(":",0)
+                    version = t2[n+1:]
+                    break
+                #end if
+            #next
+        #end if
         return kind , version
     #end def
     #*********************************************************************************
@@ -1488,7 +1490,7 @@ class CheckTool():
                         kind, version = self.CoverCheck(page, interpreter2, device2)
                         print()
                         print("プログラムの名称：{}".format(kind))
-                        print("プログラムのバーsジョン：{}".format(version))
+                        print("プログラムのバージョン：{}".format(version))
 
                         with open("./kind.txt", 'w', encoding="utf-8") as fp2:
                             print(kind, file=fp2)
@@ -1933,10 +1935,10 @@ if __name__ == '__main__':
     # limit = 0.70
     # filename = "SS7構造計算書（抜粋）のコピー.pdf"
 
-    # stpage = 2
-    # edpage = 84
-    # limit = 0.90
-    # filename = "構造計算書_新関西将棋会館.pdf"
+    stpage = 2
+    edpage = 32
+    limit = 0.70
+    filename = "法円坂(計算書)【抜粋】.pdf"
 
     CT = CheckTool()
     
