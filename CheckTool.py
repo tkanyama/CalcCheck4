@@ -783,7 +783,7 @@ class CheckTool():
                                 if char[1]>=zx0 and char[2]<=zx1:
                                     t4 += char[0]
                             # t4=t4.replace("検定比","")
-                            if isfloat(t4): # 切り取った文字が数値の場合の処理
+                            if isfloat(t4) and len(t4)>=4: # 切り取った文字が数値の場合の処理
                                 a = float(t4)
                                 if a>=limit1 and a<=1.0:
                                     # 数値がlimit以上の場合はデータに登録
@@ -822,7 +822,7 @@ class CheckTool():
                                 st = n + 3
                                 for w1 in w0:
                                     w2 = w1.replace("検定比","")
-                                    if isfloat(w2): # 切り取った文字が数値の場合の処理
+                                    if isfloat(w2) and len(w2)>=4: # 切り取った文字が数値の場合の処理
                                         a = float(w2)
                                         if a>=limit1 and a<=1.0:
                                             # 数値がlimit以上の場合はデータに登録
@@ -901,7 +901,7 @@ class CheckTool():
                                     if len(w0)>=1:
                                         for w1 in w0:
                                             w2 = w1.replace(" ","")
-                                            if isfloat(w2): # 切り取った文字が数値の場合の処理
+                                            if isfloat(w2) and len(w2)>=4: # 切り取った文字が数値の場合の処理
                                                 a = float(w2)
                                                 if a>=limit1 and a<=1.0:
                                                     # 数値がlimit以上の場合はデータに登録
@@ -963,7 +963,7 @@ class CheckTool():
                                     t6 = t5.replace("検定比","")    # 「検定比」と数値が一緒の場合は除去
                                     nn = t3.find(t6,st)   # 数値の文字位置を検索
                                     ln = len(t5)
-                                    if isfloat(t6):
+                                    if isfloat(t6) and len(t6)>=4:
                                         a = float(t6)
                                         if a>=limit1 and a<=1.0:
                                             # 数値がlimit以上の場合はデータに登録
@@ -1040,7 +1040,7 @@ class CheckTool():
                                 if len(w0)>=1:
                                     for w1 in w0:
                                         w2 = w1.replace(" ","")
-                                        if isfloat(w2): # 切り取った文字が数値の場合の処理
+                                        if isfloat(w2) and len(w2)>=4: # 切り取った文字が数値の場合の処理
                                             a = float(w2)
                                             if a>=limit1 and a<=1.0:
                                                 # 数値がlimit以上の場合はデータに登録
@@ -1245,7 +1245,7 @@ class CheckTool():
                                 if len(w0)>=1:
                                     for w1 in w0:
                                         w2 = w1.replace(" ","")
-                                        if isfloat(w2): # 切り取った文字が数値の場合の処理
+                                        if isfloat(w2) and len(w2)>=4: # 切り取った文字が数値の場合の処理
                                             a = float(w2)
                                             if a>=limit1 and a<=1.0:
                                                 # 数値がlimit以上の場合はデータに登録
